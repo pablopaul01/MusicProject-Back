@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Category = require("category");
 
 const audioSchema = new mongoose.Schema({
     title: {
@@ -14,7 +15,8 @@ const audioSchema = new mongoose.Schema({
         trim: true,
     },
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         trim: true
     }
 }, {timestamps : true});
