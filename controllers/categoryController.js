@@ -1,8 +1,8 @@
-const category = require('../models/categorySchema')
+const Category = require('../models/categorySchema')
 
 const createCategory = async (req, res) => {
     const { name } = req.body;
-    const category = await category.findOne({ name });
+    const category = await Category.findOne({ name });
     try {
         if (category) {
             return res.status(400).json({
@@ -10,7 +10,7 @@ const createCategory = async (req, res) => {
                 status: 400
             })
         }
-        const newCategory = new category({
+        const newCategory = new Category({
             name
         })
         await newCategory.save();
@@ -30,7 +30,7 @@ const createCategory = async (req, res) => {
 }
 
 const getAllCategories = async (req, res) => {
-    const categories = await category.find()
+    const categories = await Category.find()
     try {
         if (!categories) {
             return res.status(404).json({
@@ -51,7 +51,60 @@ const getAllCategories = async (req, res) => {
     }
 }
 
+const getCategory = async (req, res) => {
+    const { id } = req.params;
+
+    const categorie = await Category.findById(id);
+    try {
+        if (!categorie) {
+            return res.status(400).json({
+                mensaje: "Categoria no encontrado",
+                status: 400
+            })
+        }
+        return res.status(201).json({
+            mensaje: "Categoria encontrado",
+            status: 201,
+            categorie
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            mensaje: "Hubo un error, intente más tarde",
+            status: 500
+        })
+    }
+}
+
+const updateCategory = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body
+    try {
+        const category = await Category.findByIdAndUpdate(id,{
+            name,
+        }, {new: true})
+
+        if (!category){
+                return res.status(404).json({
+                    mensaje: "Categoria no encontrado",
+                    status:404
+                })
+            }
+        return res.status(200).json({
+            mensaje: "Categoria actualizada correctamente",
+            status: 200,
+            categorie
+        })
+    } catch (error) {
+        return  res.status(500).json({
+            mensaje: "hubo un error, intentelo mas tarde",
+            status: 500
+        })
+    }
+}
+
 module.exports = {
     createCategory,
-    getAllCategories
+    getAllCategories,
+    updateCategory
   }

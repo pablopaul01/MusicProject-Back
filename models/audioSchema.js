@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Category = require("category");
+const Category = require("../models/categorySchema");
 
 const audioSchema = new mongoose.Schema({
     title: {
