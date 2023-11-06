@@ -8,7 +8,7 @@ router.post("/", upload.single("audio"), createAudio);
 router.get("/", getAllAudios);
 
 router.post("/category", createCategory);
-router.get("/category", getAllCategories);
+router.get("/categories", getAllCategories);
 router.put("/category/:id", updateCategory);
 
 module.exports = router; 
