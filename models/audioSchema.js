@@ -15,6 +15,10 @@ const audioSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    duration: {
+        type: Number,
+        trim: true
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",

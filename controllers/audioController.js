@@ -14,11 +14,12 @@ const createAudio = async (req, res) => {
                 status: 400
             })
         }
-
+        console.log(audioCloud)
         const newAudio = new Audio({
             title,
             artist,
             url: audioCloud.secure_url,
+            duration: audioCloud.duration,
             category
         })
         await newAudio.save();
