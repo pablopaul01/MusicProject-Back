@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Category = require("../models/categorySchema");
 
+
 const audioSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -13,6 +14,10 @@ const audioSchema = new mongoose.Schema({
     url: {
         type: String,
         trim: true,
+    },
+    duration: {
+        type: Number,
+        trim: true
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
