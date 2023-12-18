@@ -1,14 +1,15 @@
 const router = require("express").Router();
 const upload = require("../middlewares/multer")
 const { register, getAllUsers, getUserById, deleteUser, login, userUpdate, changeToAdmin, userDisabled, addAudios, deleteAudio } = require("../controllers/userController");
-const {createAudio, getAllAudios} = require("../controllers/audioController.js");
+const {createAudio, getAllAudios, delAudio, updateAudio} = require("../controllers/audioController.js");
 const {getAllCategories, createCategory, updateCategory} = require("../controllers/categoryController.js");
 const authenticateAdmin = require("../middlewares/authAdmin");
 const authenticateUser = require("../middlewares/authUser");
 
 router.post("/", upload.single("audio"), createAudio);
-
+router.delete("/", delAudio);
 router.get("/", getAllAudios);
+router.put("/", updateAudio);
 
 router.post("/category", createCategory);
 router.get("/categories", getAllCategories);
