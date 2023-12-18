@@ -14,6 +14,7 @@ const getAllUsers = async (req, res) => {
                 status: 404
             })
         }
+
         return res.status(201).json({
             mensaje: "Los usuarios se encontraron exitosamente",
             status: 201,
@@ -28,41 +29,34 @@ const getAllUsers = async (req, res) => {
 }
 
 const getUserById = async (req, res) => {
-
     const { id } = req.params;
-
-    const user = await User.findById(id);
-
+    const user = await User.findOne({ _id: id }).populate({path: 'audioList', populate: 'category'});
     try {
-        if (!mongoose.isValidObjectId(id)) {
-            return res.status(400).json({
-                mensaje: "Id del usuario no válido",
-                status: 400
-            })
-        }
-        if (!user) {
-            return res.status(400).json({
-                mensaje: "Usuario no encontrado",
-                status: 400
-            })
-        }
-        return res.status(201).json({
-            mensaje: "Usuario encontrado",
-            status: 201,
-            user
-        })
 
+        if (!user) {
+            return res.status(404).json({
+                mensaje: "Usuario no encontrado",
+                status: 404,
+            });
+        }
+        console.log(user.audioList)
+        return res.status(200).json({
+            mensaje: "Usuario encontrado exitosamente",
+            status: 200,
+            user,
+        });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             mensaje: "Hubo un error, intente más tarde",
-            status: 500
-        })
+            status: 500,
+        });
     }
-}
+};
 
 const register = async (req, res) => {
 
-    const { name, lastname, password, email, role, state } = req.body;
+    const { name, lastname, password, email, role, state, whatsapp } = req.body;
 
     const user = await User.findOne({ email });
 
@@ -79,7 +73,8 @@ const register = async (req, res) => {
             password: encryptPassword(password),
             email,
             role,
-            state
+            state,
+            whatsapp
         })
         await newUser.save();
         return res.status(201).json({
@@ -216,7 +211,7 @@ const userDisabled = async (req, res) => {
 
 const userUpdate = async (req, res) => {
     const { id } = req.params;
-    const { name, lastname, password, state } = req.body
+    const { name, lastname, password, state,whatsapp } = req.body
     const secret = process.env.JWT_SECRET;
 
     try {
@@ -233,6 +228,7 @@ const userUpdate = async (req, res) => {
                 name,
                 lastname,
                 state,
+                whatsapp,
                 password: encryptPassword(password)
             }, { new: true });
 
@@ -248,7 +244,8 @@ const userUpdate = async (req, res) => {
                 name: user.name,
                 lastname: user.lastname,
                 role: user.role,
-                state: user.state
+                state: user.state,
+                whatsapp: user.whatsapp
             }
 
             const token = jwt.sign(payload, secret, { algorithm: process.env.ALGORITHM });
@@ -272,7 +269,8 @@ const userUpdate = async (req, res) => {
             name: user.name,
             lastname: user.lastname,
             role: user.role,
-            state: user.state
+            state: user.state,
+            whatsapp: user.whatsapp
         }
 
         const token = jwt.sign(payload, secret, { algorithm: process.env.ALGORITHM });
@@ -319,6 +317,95 @@ const changeToAdmin = async (req, res) => {
 }
 
 
+const addAudios = async (req, res) => {
+    const { id } = req.params;
+    const { _id } = req.body;
+    console.log(_id)
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({
+                mensaje: "Usuario no encontrado",
+                status: 404,
+            });
+        }
+
+        // Verificar si el audio ya está en la lista
+        const audioExists = user.audioList.some(
+            (audio) => audio.toString() === _id
+        );
+        if (!audioExists) {
+            // Agregar el ID del audio directamente a audioList
+            user.audioList.push( _id );
+            await user.save();
+
+            return res.status(200).json({
+                mensaje: "Se agregó correctamente el audio",
+                status: 200,
+                user,
+            });
+        } else {
+            return res.status(400).json({
+                mensaje: "El audio ya existe en la lista",
+                status: 400,
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Hubo un error, intente más tarde",
+            status: 500,
+        });
+    }
+};
+
+const deleteAudio = async (req, res) => {
+    const { id } = req.params;
+    const { _id } = req.body;
+   
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({
+                mensaje: "El usuario no existe",
+                status: 404
+            });
+        }
+        console.log(user.audioList)
+        let audioIdx = null;
+        audioIdx = user.audioList.map((audio,idx) => {
+            if (audio.toString() === _id){
+                console.log(idx)
+                return idx
+            }
+            });
+            console.log(audioIdx)
+        if (audioIdx.length===0) {
+            return res.status(404).json({
+                mensaje: "El audio no existe en la lista del usuario",
+                status: 404
+            });
+        }
+
+        user.audioList.splice(audioIdx, 1);
+        await user.save();
+
+        return res.status(200).json({
+            mensaje: "Se eliminó correctamente el audio de la lista",
+            status: 200,
+            user
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Hubo un error, intente más tarde",
+            status: 500
+        });
+    }
+};
 
 
 module.exports = {
@@ -329,5 +416,7 @@ module.exports = {
     login,
     userUpdate,
     changeToAdmin,
-    userDisabled
+    userDisabled,
+    addAudios,
+    deleteAudio
 }
