@@ -64,7 +64,7 @@ const getAllAudios = async (req, res) => {
 
 const delAudio = async (req, res) => {
     const { id } = req.params;
-
+    console.log("ID: ", id)
     try {
         // Buscar el audio por ID
         const audio = await Audio.findById(id);
@@ -103,7 +103,6 @@ const delAudio = async (req, res) => {
 const updateAudio = async (req, res) => {
     const { id } = req.params;
     const { title, artist, category } = req.body;
-
     try {
         // Buscar el audio por ID
         const audio = await Audio.findById(id);
