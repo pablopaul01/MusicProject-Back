@@ -7,9 +7,9 @@ const authenticateAdmin = require("../middlewares/authAdmin");
 const authenticateUser = require("../middlewares/authUser");
 
 router.post("/", upload.single("audio"), createAudio);
-router.delete("/", delAudio);
+router.delete("/:id", delAudio);
 router.get("/", getAllAudios);
-router.put("/", updateAudio);
+router.put("/:id",upload.none(), updateAudio);
 
 router.post("/category", createCategory);
 router.get("/categories", getAllCategories);
