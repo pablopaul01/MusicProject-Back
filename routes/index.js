@@ -11,7 +11,7 @@ router.delete("/:id", delAudio);
 router.get("/", getAllAudios);
 router.put("/:id",upload.none(), updateAudio);
 
-router.post("/category", createCategory);
+router.post("/category",upload.none(), createCategory);
 router.get("/categories", getAllCategories);
 router.put("/category/:id", updateCategory);
 

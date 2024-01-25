@@ -2,6 +2,7 @@ const Category = require('../models/categorySchema')
 
 const createCategory = async (req, res) => {
     const { name } = req.body;
+    console.log("name", name);
     const category = await Category.findOne({ name });
     try {
         if (category) {
