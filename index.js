@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const dbConnection = require("./database/db");
 const router = require("./routes");
 const cloudinary = require("cloudinary").v2;
-// const jwtStrategy = require("./passport/jwt");
+const jwtStrategy = require("./passport/jwt");
 const passport = require("passport");
 
 const app = express();
@@ -23,7 +23,7 @@ cloudinary.config({
   });
 
 //passport
-// passport.use("jwt", jwtStrategy);
+passport.use("jwt", jwtStrategy);
 
 
 //configuracion de rutas
