@@ -30,7 +30,7 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     const { id } = req.params;
-    const user = await User.findOne({ _id: id }).populate({path: 'audioList', populate: 'category'});
+    const user = await User.findOne({ _id: id }).populate('audioList');
     try {
 
         if (!user) {
@@ -39,7 +39,6 @@ const getUserById = async (req, res) => {
                 status: 404,
             });
         }
-        console.log(user.audioList)
         return res.status(200).json({
             mensaje: "Usuario encontrado exitosamente",
             status: 200,
@@ -150,7 +149,6 @@ const login = async (req, res) => {
         const payload = {
             sub: user._id,
             email: user.email,
-            name: user.name,
             lastname: user.lastname,
             role: user.role,
             state: user.state
@@ -320,17 +318,14 @@ const changeToAdmin = async (req, res) => {
 const addAudios = async (req, res) => {
     const { id } = req.params;
     const { _id } = req.body;
-    console.log(_id)
     try {
         const user = await User.findById(id);
-
         if (!user) {
             return res.status(404).json({
                 mensaje: "Usuario no encontrado",
                 status: 404,
             });
         }
-
         // Verificar si el audio ya está en la lista
         const audioExists = user.audioList.some(
             (audio) => audio.toString() === _id
@@ -363,8 +358,6 @@ const addAudios = async (req, res) => {
 const deleteAudio = async (req, res) => {
     const { id } = req.params;
     const { _id } = req.body;
-   
-
     try {
         const user = await User.findById(id);
 
@@ -374,15 +367,12 @@ const deleteAudio = async (req, res) => {
                 status: 404
             });
         }
-        console.log(user.audioList)
         let audioIdx = null;
         audioIdx = user.audioList.map((audio,idx) => {
             if (audio.toString() === _id){
-                console.log(idx)
                 return idx
             }
             });
-            console.log(audioIdx)
         if (audioIdx.length===0) {
             return res.status(404).json({
                 mensaje: "El audio no existe en la lista del usuario",

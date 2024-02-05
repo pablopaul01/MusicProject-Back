@@ -40,6 +40,23 @@ const userSchema = new mongoose.Schema({
     }
 }, {timestamps : true});
 
+
+// Middleware pre que se ejecutará antes de que un documento de Audio sea eliminado
+userSchema.pre("remove", async function (next) {
+    const audioId = this._id;
+
+    try {
+        // Actualizar todos los usuarios que tengan este audioId en su audioList
+        await this.model("User").updateMany(
+            { audioList: audioId },
+            { $pull: { audioList: audioId } }
+        );
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

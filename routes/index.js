@@ -8,7 +8,7 @@ const authenticateUser = require("../middlewares/authUser");
 
 router.post("/", upload.single("audio"), createAudio);
 router.delete("/:id", delAudio);
-router.get("/", getAllAudios);
+router.get("/" ,getAllAudios);
 router.put("/:id",upload.none(), updateAudio);
 
 router.post("/category",upload.none(), createCategory);
@@ -16,17 +16,17 @@ router.get("/categories", getAllCategories);
 router.put("/category/:id", updateCategory);
 
 //rutas de usuarios
-router.get("/usuarios", getAllUsers);
-router.get("/usuario/:id", getUserById);
-router.delete("/usuario/:id", deleteUser);
-router.put("/usuario/:id", authenticateUser, userUpdate);
-router.post("/registrar", register);
+router.get("/usuarios",authenticateAdmin ,getAllUsers);
+router.get("/usuario/:id" , getUserById);
+router.delete("/usuario/:id",authenticateAdmin , deleteUser);
+router.put("/usuario/:id",authenticateUser , userUpdate);
+router.post("/registrar",authenticateAdmin , register);
 router.post("/login", login);
 router.put("/admin/:id", authenticateAdmin, changeToAdmin);
-router.put("/desactivar/usuario/:id", authenticateAdmin, userDisabled);
+router.put("/desactivar/usuario/:id",authenticateAdmin , userDisabled);
 
-router.post("/usuario/audios/:id",addAudios);
-router.put("/usuario/audios/:id",deleteAudio);
+router.post("/usuario/audios/:id",authenticateAdmin ,addAudios);
+router.put("/usuario/audios/:id",authenticateAdmin ,deleteAudio);
 
 
 module.exports = router; 
