@@ -23,7 +23,7 @@ router.put("/usuario/:id",authenticateUser , userUpdate);
 router.post("/registrar",authenticateAdmin , register);
 router.post("/login", login);
 router.put("/admin/:id", authenticateAdmin, changeToAdmin);
-router.put("/desactivar/usuario/:id",authenticateAdmin , userDisabled);
+router.put("/desactivar/usuario/:id",authenticateAdmin, userDisabled);
 
 router.post("/usuario/audios/:id",authenticateAdmin ,addAudios);
 router.put("/usuario/audios/:id",authenticateAdmin ,deleteAudio);
