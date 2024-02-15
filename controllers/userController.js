@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const User = require("../models/userSchema.js");
 const { encryptPassword, comparePassword } = require("../utils/passwordHandler.js");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcryptjs");
 
 const getAllUsers = async (req, res) => {
 
@@ -397,6 +399,59 @@ const deleteAudio = async (req, res) => {
     }
 };
 
+const recoverPass = async (req, res) => {   
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(404).json({
+            mensaje: "El usuario no existe",
+            status: 404
+        });
+    }
+    const token = jwt.sign({
+        id: user._id
+    }, "jwt_secret_key", {expiresIn: "1d"});
+
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        port:587,
+        auth: {
+          user: 'luisisaproject@gmail.com',
+          pass: 'ryspmtaoietxncfg'
+        }
+      });
+      
+      var mailOptions = {
+        from: 'luisisaproject@gmail.com',
+        to: `${user.email}`,
+        subject: 'Reset Password Link',
+        text: `http://localhost:3000/reset_password/${user._id}/${encodeURIComponent(token)}`
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          return res.send({Status: "Success"})
+        }
+      });
+
+}
+
+const resetPass = async (req, res) => {
+    const {id, token} = req.params
+    const {password} = req.body
+
+    jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+        if(err) {
+            return res.json({Status: "Error with token"})
+        } else {
+            User.findByIdAndUpdate({_id: id}, {password: encryptPassword(password)})
+                .then(u => res.send({Status: "Success"}))
+                .catch(err => res.send({Status: err}))
+        }
+    })
+}
 
 module.exports = {
     register,
@@ -408,5 +463,7 @@ module.exports = {
     changeToAdmin,
     userDisabled,
     addAudios,
-    deleteAudio
+    deleteAudio,
+    recoverPass,
+    resetPass
 }
