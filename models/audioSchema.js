@@ -29,7 +29,6 @@ const audioSchema = new mongoose.Schema({
 
 // Middleware para eliminar el ID del audio de la lista de audio de los usuarios
 audioSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
-        console.log("entro al pre")
         try {
             // Buscar y eliminar el ID del audio de la lista de audio de todos los usuarios
             await this.model('User').updateMany(

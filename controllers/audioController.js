@@ -5,7 +5,6 @@ const createAudio = async (req, res) => {
     const { title, artist, category } = req.body;
     const {path} = req.file;
     const audio = await Audio.findOne({ title });
-    console.log("path: ", path)
     const audioCloud= await cloudinary.uploader.upload(path,{resource_type: 'auto'});
     try {
         if (audio) {
@@ -14,7 +13,6 @@ const createAudio = async (req, res) => {
                 status: 400
             })
         }
-        console.log(audioCloud)
         const newAudio = new Audio({
             title,
             artist,
