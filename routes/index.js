@@ -2,19 +2,19 @@ const router = require("express").Router();
 const upload = require("../middlewares/multer")
 const { register, getAllUsers, getUserById, deleteUser, login, userUpdate, changeToAdmin, userDisabled, addAudios, deleteAudio, recoverPass, resetPass } = require("../controllers/userController");
 const {createAudio, getAllAudios, delAudio, updateAudio} = require("../controllers/audioController.js");
-const {getAllCategories, createCategory, updateCategory} = require("../controllers/categoryController.js");
+const {getAllCategories, createCategory, updateCategory, deleteCategory} = require("../controllers/categoryController.js");
 const authenticateAdmin = require("../middlewares/authAdmin");
 const authenticateUser = require("../middlewares/authUser");
 
-router.post("/", upload.single("audio"), createAudio);
+router.post("/", upload.single("audio"),authenticateAdmin, createAudio);
 router.delete("/:id", delAudio);
 router.get("/" ,getAllAudios);
-router.put("/:id",upload.none(), updateAudio);
+router.put("/:id",upload.none(),authenticateAdmin, updateAudio);
 
 router.post("/category",upload.none(), authenticateAdmin, createCategory);
 router.get("/categories", getAllCategories);
 router.put("/category/:id", updateCategory);
-router.delete("/category/:id",authenticateAdmin, delAudio);
+router.delete("/category/:id",authenticateAdmin, deleteCategory);
 
 //rutas de usuarios
 router.get("/usuarios",authenticateAdmin ,getAllUsers);

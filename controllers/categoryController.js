@@ -2,7 +2,6 @@ const Category = require('../models/categorySchema')
 
 const createCategory = async (req, res) => {
     const { name } = req.body;
-    console.log("name", name);
     const category = await Category.findOne({ name });
     try {
         if (category) {
@@ -94,11 +93,11 @@ const updateCategory = async (req, res) => {
         return res.status(200).json({
             mensaje: "Categoria actualizada correctamente",
             status: 200,
-            categorie
+            category
         })
     } catch (error) {
         return  res.status(500).json({
-            mensaje: "hubo un error, intentelo mas tarde",
+            mensaje: "hubo un error, intentelo mas tarde fijate que onda",
             status: 500
         })
     }
@@ -117,11 +116,11 @@ const deleteCategory = async (req, res) => {
         return res.status(200).json({
             mensaje: "Categoria eliminada correctamente",
             status: 200,
-            categorie
+            category
         })
     } catch (error) {
         return  res.status(500).json({
-            mensaje: "hubo un error, intentelo mas tarde",
+            mensaje: "hubo un error, intentelo mas tarde fijate que onda",
             status: 500
         })
     }
