@@ -13,7 +13,6 @@ module.exports = multer({
         if (mimeType && extname) {
             return cb(null, true)
         }
-
         cb("Error: el tipo de archivo no esta permitido -" + fileTypes)
      }
 })
