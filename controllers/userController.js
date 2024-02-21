@@ -377,7 +377,6 @@ const deleteAudio = async (req, res) => {
                 status: 404
             });
         }
-        console.log(audioIdx);
         user.audioList.splice(audioIdx, 1);
         await user.save();
 
