@@ -370,18 +370,14 @@ const deleteAudio = async (req, res) => {
             });
         }
         let audioIdx = null;
-        audioIdx = user.audioList.map((audio,idx) => {
-            if (audio.toString() === _id){
-                return idx
-            }
-            });
+        audioIdx = user.audioList.indexOf(_id);
         if (audioIdx.length===0) {
             return res.status(404).json({
                 mensaje: "El audio no existe en la lista del usuario",
                 status: 404
             });
         }
-
+        console.log(audioIdx);
         user.audioList.splice(audioIdx, 1);
         await user.save();
 
